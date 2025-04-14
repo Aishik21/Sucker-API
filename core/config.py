@@ -1,6 +1,7 @@
 import os
 from typing import Optional
-from pydantic import BaseSettings, Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field
 from crawl4ai import LLMConfig, BrowserConfig, CacheMode
 
 class Settings(BaseSettings):
@@ -21,10 +22,8 @@ class Settings(BaseSettings):
     # Rate Limiting
     RATE_LIMIT_DELAY: float = Field(default=2.0, env="RATE_LIMIT_DELAY")
     MAX_RETRIES: int = Field(default=3, env="MAX_RETRIES")
-
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    
+    model_config = SettingsConfigDict(env_file=".env", case_sensitive=True)
 
 settings = Settings()
 

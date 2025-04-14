@@ -12,6 +12,7 @@ A general-purpose web crawler API that uses LLM-powered content extraction and c
 - Configurable through environment variables
 - Comprehensive logging system
 - Standalone scraping script for specific use cases
+- Command-line interface (CLI) for easy usage
 
 ## Installation
 
@@ -39,61 +40,48 @@ MAX_RETRIES=3
 mkdir output logs
 ```
 
-## Running the API
+## CLI Usage
 
-Start the API server:
-```bash
-uvicorn api.main:app --reload
-```
+The web crawler can be used directly from the command line with two main commands:
 
-The API will be available at `http://localhost:8000`
-
-## Deployment
-
-The API can be deployed for free on several platforms:
-
-### Render
-1. Create a new Web Service on Render
-2. Connect your GitHub repository
-3. Set the following environment variables:
-   - `GEMINI_API_KEY`
-   - `API_KEY`
-   - `CRAWLER_HEADLESS=true`
-   - `CRAWLER_VIEWPORT_WIDTH=1280`
-   - `CRAWLER_VIEWPORT_HEIGHT=720`
-   - `OUTPUT_DIR=/app/output`
-   - `MASTER_FILE=master.json`
-   - `RATE_LIMIT_DELAY=2.0`
-   - `MAX_RETRIES=3`
-4. Deploy!
-
-### Railway
-1. Create a new project on Railway
-2. Connect your GitHub repository
-3. Set the environment variables as above
-4. Deploy!
-
-### Heroku
-1. Create a new app on Heroku
-2. Connect your GitHub repository
-3. Set the environment variables as above
-4. Deploy!
-
-### Fly.io
-1. Install the Fly.io CLI
-2. Run `fly launch`
-3. Set the environment variables as above
-4. Run `fly deploy`
-
-## Standalone Scraping Script
-
-The project includes a standalone scraping script (`scrape.py`) for specific use cases. To run it:
+### Starting the API Server
 
 ```bash
-python scrape.py
+web-crawler serve [--host HOST] [--port PORT] [--reload]
 ```
 
-This script uses the same core functionality as the API but is configured for specific scraping tasks.
+Options:
+- `--host`: Host to bind to (default: 127.0.0.1)
+- `--port`: Port to bind to (default: 8000)
+- `--reload`: Enable auto-reload for development
+
+Example:
+```bash
+web-crawler serve --host 0.0.0.0 --port 8080 --reload
+```
+
+### Running a Crawl Job
+
+```bash
+web-crawler crawl --urls URL1 URL2 ... --link-instruction "INSTRUCTION" --content-instruction "INSTRUCTION" [--max-depth DEPTH] [--rate-limit DELAY]
+```
+
+Options:
+- `--urls`: One or more URLs to crawl (required)
+- `--link-instruction`: Instruction for link extraction (required)
+- `--content-instruction`: Instruction for content extraction (required)
+- `--max-depth`: Maximum crawl depth (default: 5)
+- `--rate-limit`: Rate limit delay in seconds (default: 2.0)
+
+Example:
+```bash
+web-crawler crawl \
+  --urls "https://example.com" "https://example.org" \
+  --link-instruction "Extract all links from the page" \
+  --content-instruction "Extract the main content from the page" \
+  --max-depth 3 \
+  --rate-limit 1.5
+```
 
 ## API Endpoints
 
@@ -155,7 +143,7 @@ The API can be configured through environment variables:
 ```
 .
 ├── api/
-│   └── main.py           # FastAPI application
+│   └── main.py           # FastAPI application and CLI
 ├── core/
 │   ├── crawler.py        # Base crawler implementation
 │   ├── config.py         # Configuration management
@@ -167,6 +155,7 @@ The API can be configured through environment variables:
 ├── logs/               # Directory for log files
 ├── scrape.py           # Standalone scraping script
 ├── requirements.txt    # Project dependencies
+├── setup.py           # Package configuration
 ├── Dockerfile         # Docker configuration
 ├── docker-compose.yml # Docker Compose configuration
 ├── Procfile          # Heroku/Render configuration
