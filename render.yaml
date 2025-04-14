@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: web-crawler-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn api.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: API_KEY
+        sync: false
+      - key: CRAWLER_HEADLESS
+        value: true
+      - key: CRAWLER_VIEWPORT_WIDTH
+        value: 1280
+      - key: CRAWLER_VIEWPORT_HEIGHT
+        value: 720
+      - key: OUTPUT_DIR
+        value: /app/output
+      - key: MASTER_FILE
+        value: master.json
+      - key: RATE_LIMIT_DELAY
+        value: 2.0
+      - key: MAX_RETRIES
+        value: 3 
