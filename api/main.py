@@ -124,6 +124,13 @@ async def get_data(request: Request, api_key: str = Depends(get_api_key)):
     processor = DataProcessor()
     return processor.load_master_file()
 
+@app.get("/debug/settings")
+async def debug_settings():
+    return {
+        "api_key": settings.API_KEY,
+        "gemini_api_key": settings.GEMINI_API_KEY
+    }
+
 @app.get("/health")
 async def health_check():
     return {

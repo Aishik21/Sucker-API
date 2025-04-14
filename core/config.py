@@ -1,29 +1,30 @@
 import os
 from typing import Optional
-from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import Field
+from pydantic import BaseSettings, Field
 from crawl4ai import LLMConfig, BrowserConfig, CacheMode
 
 class Settings(BaseSettings):
     # API Keys
-    GEMINI_API_KEY: str = Field(..., env="GEMINI_API_KEY")
-    API_KEY: str = Field(..., env="API_KEY")  # For API authentication
+    GEMINI_API_KEY: str = Field(default="your_api_key_here", env="GEMINI_API_KEY")
+    API_KEY: str = Field(default="TuTu42021", env="API_KEY")  # For API authentication
     
     # Crawler Settings
-    CRAWLER_HEADLESS: bool = Field(True, env="CRAWLER_HEADLESS")
-    CRAWLER_VIEWPORT_WIDTH: int = Field(1280, env="CRAWLER_VIEWPORT_WIDTH")
-    CRAWLER_VIEWPORT_HEIGHT: int = Field(720, env="CRAWLER_VIEWPORT_HEIGHT")
-    CRAWLER_CACHE_MODE: CacheMode = Field(CacheMode.BYPASS, env="CRAWLER_CACHE_MODE")
+    CRAWLER_HEADLESS: bool = Field(default=True, env="CRAWLER_HEADLESS")
+    CRAWLER_VIEWPORT_WIDTH: int = Field(default=1280, env="CRAWLER_VIEWPORT_WIDTH")
+    CRAWLER_VIEWPORT_HEIGHT: int = Field(default=720, env="CRAWLER_VIEWPORT_HEIGHT")
+    CRAWLER_CACHE_MODE: CacheMode = Field(default=CacheMode.BYPASS, env="CRAWLER_CACHE_MODE")
     
     # Output Settings
-    OUTPUT_DIR: str = Field("output", env="OUTPUT_DIR")
-    MASTER_FILE: str = Field("master.json", env="MASTER_FILE")
+    OUTPUT_DIR: str = Field(default="output", env="OUTPUT_DIR")
+    MASTER_FILE: str = Field(default="master.json", env="MASTER_FILE")
     
     # Rate Limiting
-    RATE_LIMIT_DELAY: float = Field(2.0, env="RATE_LIMIT_DELAY")
-    MAX_RETRIES: int = Field(3, env="MAX_RETRIES")
+    RATE_LIMIT_DELAY: float = Field(default=2.0, env="RATE_LIMIT_DELAY")
+    MAX_RETRIES: int = Field(default=3, env="MAX_RETRIES")
 
-    model_config = SettingsConfigDict(env_file=".env", case_sensitive=True)
+    class Config:
+        env_file = ".env"
+        case_sensitive = True
 
 settings = Settings()
 
